@@ -180,7 +180,7 @@ Span(N)
 
 Let Smember(m) be the sapn of member. Since member is a linear scan relying on the previous results, Smember(m) = Smember(m-1) + O(1) = O(m).
 
-Let Sproc(n) be teh span of the process and n is the length of the input.
+Let Sproc(n) be the span of the process and n is the length of the input.
 
 For every ith iteration, we know that member will called once per element for the "SeenSoFar" sublist, therefore every ith call the membership check will cost Smember(i) = O(i) span and the other constant overhead will take about O(1). Process is sequential with each call recursing on the rest, this will all add up along the critical path.
 
@@ -223,6 +223,72 @@ multiDedup listOfLists =
      in
           dedupAdjacent sortedItems
      end
+
+
+Work
+
+Flatten
+
+This function splits the given outer list into halves, with two halves being recursively done parallely, then being joined together with append.
+
+The total for flattening is:
+
+Wflat(N) = Wflat(Nl) + Wflat(Nr) + Wappend + O(1)
+
+Wappend that will combine the two lists cost O(length of left list) since it will require building a a new list copying the left and then adding right to it.
+
+This is a balanced recursion. 
+
+At each level: Each internal pays the cost for combinig O(size of the left result). This is then summed and the total left sizes will always be a constant fraction of N, therefore each level O(N) work.
+
+For a balanced recursion, the work = (Total number of levels) * (Maximum work per level)
+
+Since we are havling the number of sublists each time, we will have a balanced tree with a height of logn.
+
+Therefore Work = LogN * N = O(NlogN).
+
+Sorting
+
+For this we can use a standard parallel sorting algorithm such as mereg sort, therefore W(N) = 2W(N/2) + O(N), where there are two halves and linear worked required for merging them.
+
+Therefore Wsort(N) = O(NLogN)).
+
+dedupAdjacent SortedList
+
+For each pass there will be one comparison. Therefore, the recurrencne can be written as W(N) = W(N-1) + O(1) => Wdedup(N) = O(N).
+
+The total work for multiDedup
+
+All these phases run sequentially, therefore the work will add up.
+
+W(total) = Wflatten + Wsort + Wdedup = O(NlogN) + O(NLogN) + O(N) = O(NlogN) (Since NLogN dominates asymptotically).
+
+
+Span
+
+Flatten
+
+We know that the two halves are being run in parallel, therefore the span will be the maximum span along with the cost of merging.
+
+Therefore, S(N) = max(S(Nl), S(Nr)) + Sappend = max(S(Nl), S(Nr)) + O(Size of left half)
+
+Going from the leaves to the root, the append will copy the left sizes N/2, N/4, N/8.. with the sum being less than N. Therefore, 
+
+Sflatten = O(N)
+
+sort allItems
+
+We can use a parallelized sorting algorithm, preferably merge sort with merge being possible with O(logN) span with forking and being across O(logN) levels.
+
+Therefore, Ssort(N) = O(logN * logN) = O((logN)^2)).
+
+dedupAdjacent SortedList
+
+There is nothing we can parallelize since it is sequential, therefore, it will be the same as the work. Sdedup(N) = O(N).
+
+Therefore, the total span will add up across the sequential phases.
+
+Stotal(N, m) = Sflatten + Ssort + Sdedup = O(N) + O((logN)^2) + O(N) = O(N).
 
 ---
 
