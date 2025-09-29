@@ -127,9 +127,102 @@ Replacing the reduce function by ureduce for the given function does not change 
 
 - **2a.**
 
+dedup input = 
+     let 
+          member(lst, item) = 
+               case lst
+               | Nil
+               | Cons(hd, tl)
+
+          reverse lst = 
+               let
+                    revLoop (src, acc) = 
+                         case src
+                         | Nil 
+                         | Cons(hd, tl)
+               in
+                    revLoop(lst, Nil)
+               end
+
+
+          process (seenSoFar, keptRev, remaining) = 
+               case remaining
+               | Nil
+               | Cons(elem, rest)
+                    if member(seenSoFar, elem)
+                    then process(seenSoFar, keptRev, rest)
+                    else process(Cons(elem, seenSoFar), Cons(elem, keptRev), rest)
+               in
+                    process(Nil, Nil, input)
+               end
+
+
+The total work = Wmember + Wreverse + Wprocess
+
+Member is called once per element for the "seenSoFar" sub-list therefore for the i-th call, |SeenSOFar| <= i, leading to a cost of O(i)
+
+Therefore, Wmember(n) = Summation from i = 0 to n-1 of O(i) = O(n^2).
+
+
+Let Wproc(n) be the work done for the process on a list of length n. 
+
+For each step i, the cost would be O(1) for match/branch/cons and O(i) for calling member (as it will iterate through elements in indices i and before to check for membership).
+
+Wproc(n) = summation from i = 0 to n-1 of (O(1) + O(i)) = summation from i = 0 to n-1 of O(1) + summation of i = 0 to n-1 of O(i) = O(n) + summation of i = 0 to n-1 of O(i) = O(n) + O(n^2) (Already calculated for Wmember(n)).
+
+The final reverse, Wreverse(n) would be O(n) going through the entire list.
+
+Therefore, Wtotal = Wmember + Wreverse + Wprocess = O(N^2) + O(N) + O(N) = O(N^2) (Since O(N^2) asymptotically dominates the other two).
+
+Span(N)
+
+Let Smember(m) be the sapn of member. Since member is a linear scan relying on the previous results, Smember(m) = Smember(m-1) + O(1) = O(m).
+
+Let Sproc(n) be teh span of the process and n is the length of the input.
+
+For every ith iteration, we know that member will called once per element for the "SeenSoFar" sublist, therefore every ith call the membership check will cost Smember(i) = O(i) span and the other constant overhead will take about O(1). Process is sequential with each call recursing on the rest, this will all add up along the critical path.
+
+Sproc(n) = Summation from i = to n-1(O(1) + Smem(i)) = summation from i = 0 to n-1 of O(1) + Summation from i = 0 to n-1 of O(i) = O(n) + O(n^2) = O(n^2).
+
+Reverse is also sequential, so its span will be the same as the work. Srev(n) = O(n).
+
+The entire program is sequential and parallelizing is not possible.
+Therefore, Stotal(n) = Sproc(n) + Srev(n) = O(n^2) + O(n) = O(n^2).
+
 - **2b.**
 
+flatten listOfLists = 
+     case listOfLists
+     | Nil
+     | Cons(xs, Nil)
+     | _ 
+          let
+               (leftLists, rightLists) = splitMid listOfLists
+               (leftFlat, rightFlat) = (flatten leftLists || flatten rightLists)
+          in
+               append(leftFlat, rightFlat)
+          end
+
+dedupAdjacent sortedList = 
+     case sortedList
+     | Nil
+     | Cons(x, Nil)
+     | Cons(curr, Cons(next, rest)) 
+          if curr = next
+          then dedupAdjacent(Cons(next, rest))
+          else Cons(curr, dedupAdjacent(Cons(next, rest)))
+
+multiDedup listOfLists = 
+     let
+          allItems = flatten listOfLists
+          sortedItems = sort allItems
+     in
+          dedupAdjacent sortedItems
+     end
+
+
 - **2c.**
+- 
 
 - **3b.**
 
