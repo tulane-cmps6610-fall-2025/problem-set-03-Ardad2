@@ -290,6 +290,13 @@ Therefore, the total span will add up across the sequential phases.
 
 Stotal(N, m) = Sflatten + Ssort + Sdedup = O(N) + O((logN)^2) + O(N) = O(N).
 
+
+Compared to the previous algorithm, the work is better at O(NlogN) compared to the quadratic one for O(N^2) for the previous algorithm. The span is also substantially better at O(N) as compared to quadratic one O(N^2) for the previous algorithm.-
+
+The parallelism for 2a is (W/S) = O(n^2)/O(n^2) = O(1), whereas for the current algorithm it is (W/S) = O(NlogN)/O(N) = O(logN).
+
+The difference mainly comes from the previous algorithm using a sequential membership check compared to the current one's divide conquer flattening as well as parallel sorting phases.
+
 ---
 
 - **2c.**
