@@ -315,6 +315,41 @@ List Deduplication
 
 - **3b.**
 
+The algorithms makes use of iterate which processes the list sequentially, since each item relies on the previous and about O(1) constant work is done by parens_update function. Iterate also keeps going until it has visited all the items.
+
+Work
+
+We get the following recurrence
+
+W(n) = W(n - 1) + c
+
+For base case W(0) = O(1)
+
+Unrolling W(n) = W(n - 1) + c
+               = W(n - 2) + c + c 
+               = W(n - 3) + c + c + c
+               = W(0) + nc
+               = O(1) + O(N)
+
+Therefore, the work would be O(N)
+
+Span
+
+The given algorithm can not be parallized, therefore the critical path would include all the steps:
+
+S(n) = S(n - 1) + c
+For base case S(0) = O(1)
+
+Unrolling S(n) = S(n - 1) + c
+               = S(n - 2) + c + c
+               = S(n - 3) + c + c + c
+               = S(0) + nc
+               = O(1) + O(N)
+
+Therefore, the span is O(N).
+
+
+
 
 ---
 
