@@ -47,7 +47,7 @@ The work and the span are both O(n).
 
 - **1d.**
 
-Model (as in lecture): each equality and each OR-combine is \(O(1)\). The two recursive calls in `reduce` run in **parallel**.
+Eeach equality and each OR-combine is \(O(1)\). These two recursive calls in `reduce` run in **parallel**.
 
 #### Work $(W(n)$)
 
