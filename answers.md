@@ -163,107 +163,31 @@ $S(n)=\max{S_{\mathcal Map}(n),\,S_{\mathcal Red}(n)\} = O(\log_2 n)$
 
 #### Work (W(n))
 
-$W_{\mathcal total}(n) + W_{\mathcal reduction}(n)=O(n) + O(n) = O(n)$
+$W_{\mathcal total}(n) = W_{\mathcal map}(n) + W_{\mathcal reduce}$
 
-Total work W(n) = Wmap(N) + Wreduce(n).
 
-Mapping:
+- **Mapping** $W_{\mathcal map}(n) =O(N)$
+- **Reducing** It has one unbalanced split then two balanced reduces of sizes ~n/3 and ~2n/3. Let Wbalance(m) be the work balanced reudce, we know it would we Wbal(m) = O(m) as was derived for the previous reduce function that was given.
 
-Wmap(N) = O(N)
+$$
+W_{\mathcal reduce}(n) = W_{\mathcal balance}(n/3) + W_{\mathcal balance}(2n/3) + O(1) = O(n/3) + O(2n/3+ O (1) = O(N)
+$$
 
-Reducing:
 
-It has one unbalanced split then two balanced reduces of sizes ~n/3 and ~2n/3. Let Wbalance(m) be the work balanced reudce, we know it would we Wbal(m) = O(m) as was derived for the previous reduce function that was given.
+Therefore, the total work is: 
+$W_{\mathcal total}(n) = W_{\mathcal map}(n) + W_{\mathcal reduce} = O(N) + O(N) = O(N)$
 
-Wreduce(n) = Wbalance(n/3) + Wbalance(2n/3) + O(1) = O(n/3) + O(2n/3) + O(1) = O(N)
-
-Therefore, the total work W(n) = Wmap(n) = O(n) + O(n) = O(N)
 
 #### Span (S(n))
 
-The Map Step: N equalities over which we will do fork-join. Smap(n) = O(logN) Reduce Step: Both the subreduces will run in parallel with combine being on the critical path.
+- **Mapping** The N equalities over which we will do a fork-join. Therefore  $S_{\text{map}}(n) = O(\log_2 n)$
+- **Reducing** We know that the general span is $S_{\mathcal Balance}(m)=O(\log_2 m)$ when the size of input is m as had been derived for the earlier function. Therefore, considering the unbalanced split, the span for the reduction can be derived like this:
 
-Let Sbalance(m) = O(logm) be the span for balanced reduce as was derived for the earlier function.
+$S_{\mathcal reduce}(n)=\max{S_{\mathcal balance}(n/3),\,S_{\mathcal balance}(2n/3)\} +O(1) = O(\log_2 (2n/3)) = O(\log_2 n)$
 
-Sreduce(n) = max(Sbalance(n/3), Sbalance(2n/3)} + O(1) = O(log(2n/3)) ~= O(logn)
+- **Total span** Therefore, from the two phases, the total span would be $S_{\mathcal total}(n)=\max{S_{\mathcal map}(n),\,S_{\mathcal reduce}(2n/3)\} = O(\log_2 n)$
 
-Therefore, the total span S(n) = max(Smap(N), Sreduce(n)) = O(logN)
-
-Result:
-
-Replacing the reduce function by ureduce for the given function does not change the asymptotic bounds for the work and span for research.
-
-
-
----
-
-
-
-
-
-- **1e.**
-
-Model (as in lecture): each equality and each OR-combine is \(O(1)\).  
-In `ureduce`, we do **one unbalanced split** into sizes \(\lfloor n/3 \rfloor\) and \(\lceil 2n/3 \rceil\), then call the **balanced** `reduce` on both halves in **parallel**, and finally combine in \(O(1)\).
-
-**Work \(W(n)\)**
-
-- **Map step (build booleans):** one equality per element
-
-  $$
-  W_{\text{map}}(n)=\Theta(n).
-  $$
-
-- **Reduce step (top-level unbalanced → two balanced reduces):**  
-  Let \(W_{\text{bal}}(m)=\Theta(m)\) be the work of the balanced `reduce` on size \(m\).
-
-  $$
-  W_{\text{red}}(n)
-  \;=\;
-  W_{\text{bal}}(\lfloor n/3\rfloor)
-  \;+\;
-  W_{\text{bal}}(\lceil 2n/3\rceil)
-  \;+\; O(1)
-  \;=\; \Theta(n).
-  $$
-
-- **Total work**
-
-  $$
-  W(n)=W_{\text{map}}(n)+W_{\text{red}}(n)=\boxed{\Theta(n)}.
-  $$
-
-
-**Span \(S(n)\)**
-
-- **Map step (parallel map per lecture):**
-
-  $$
-  S_{\text{map}}(n)=\Theta(\log n).
-  $$
-
-- **Reduce step (two parallel balanced reduces, then \(O(1)\) combine):**  
-  Let \(S_{\text{bal}}(m)=\Theta(\log m)\) be the span of the balanced `reduce`.
-
-  $$
-  S_{\text{red}}(n)
-  \;=\;
-  \max\!\big\{
-  S_{\text{bal}}(\lfloor n/3\rfloor),
-  \;S_{\text{bal}}(\lceil 2n/3\rceil)
-  \big\}
-  \;+\; O(1)
-  \;=\; \Theta(\log n).
-  $$
-
-- **Total span**
-
-  $$
-  S(n)=\max\{S_{\text{map}}(n),\,S_{\text{red}}(n)\}
-  =\boxed{\Theta(\log n)}.
-  $$
-
-**Conclusion.** Replacing the balanced `reduce` with `ureduce` (one unbalanced split, then balanced reduces) does **not** change the asymptotic bounds: \(\boxed{W(n)=\Theta(n)}\) and \(\boxed{S(n)=\Theta(\log n)}\).
+- **Conclusion** Replacing the reduce function by "unreduce" for the given function does not change the asymptotic bounds for the work and span as compared to research.
 
 
 __
