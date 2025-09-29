@@ -9,8 +9,11 @@ import math
 
 # search an unordered list L for a key x using iterate
 def isearch(L, x):
-    ###TODO
-    ###
+
+    def upd(found, item):
+        return found or (item == x)
+    return iterate(upd, False, L)
+
 
 def test_isearch():
     assert isearch([1, 3, 5, 4, 2, 9, 7], 2) == (2 in [1, 3, 5, 4, 2, 9, 7])
@@ -28,8 +31,10 @@ def iterate(f, x, a):
 
 # search an unordered list L for a key x using reduce
 def rsearch(L, x):
-    ###TODO
-    ###
+    def op(a, b):
+        return a or b
+    bools = [(item == x) for item in L]
+    return reduce(op, False, bools)
 
 def test_rsearch():
     assert rsearch([1, 3, 5, 4, 2, 9, 7], 2) == (2 in [1, 3, 5, 4, 2, 9, 7])
@@ -99,8 +104,15 @@ def parens_update(current_output, next_input):
     Returns:
       the updated value of `current_output`
     """
-    ###TODO
-    ###
+
+    if current_output < 0:
+        return current_output
+    if next_input == '(':
+        return current_output + 1
+    elif next_input == ')':
+        return current_output - 1
+    else:
+        return current_output
 
 
 def test_parens_match_iterative():
@@ -133,7 +145,17 @@ def parens_match_scan(mylist):
     False
     
     """
-    ###TODO
+    ###IMPLEMENTED
+
+
+    a = list(map(paren_map, mylist))
+
+    prefix_sums, total = scan(lambda x, y: x + y, 0, a)
+
+    min_prefix = reduce(min_f, 0, prefix_sums)
+
+    return ((total == 0) and (min_prefix >= 0))
+
     ###
 
 def scan(f, id_, a):
@@ -211,14 +233,39 @@ def parens_match_dc_helper(mylist):
       L is the number of unmatched left parentheses. This output is used by 
       parens_match_dc to return the final True or False value
     """
-    ###TODO
+    ###IMPLEMENTED
+
+    n = len(mylist)
+
     # base cases
+
+    if n == 0:
+        return (0, 0)
+    
+    if n == 1:
+        ch = mylist[0]
+        if ch == '(':
+            return (0,1) #Left is unmatched
+        elif ch == ')':
+            return (1, 0) # Right is unmatched
+        else:
+            return (0, 0) #No parenthesis.
     
     # recursive case
     # - first solve subproblems
+
+    mid = n // 2
+
+    R1, L1 = parens_match_dc_helper(mylist[:mid]) #Unmatched counts for the left half.
+    R2, L2 = parens_match_dc_helper(mylist[mid:]) #The unmatched counts for the rgiht half.
     
     # - then compute the solution (R,L) using these solutions, in constant time.
+
+    boundaryMatches = min(L1, R2) #Max no. of unmatched pairs that can be matched together.
+    R = R1 + (R2 - boundaryMatches) #Unmatched )
+    L = (L1 - boundaryMatches) + L2 #Unmatched (
     
+    return (R, L)
     ###
     
 
@@ -231,3 +278,5 @@ def test_parens_match_dc():
     assert parens_match_dc(['(', '(', ')']) == False
     assert parens_match_dc(['(', 'a', ')', ')', '(']) == False
     assert parens_match_dc([]) == True 
+
+    
