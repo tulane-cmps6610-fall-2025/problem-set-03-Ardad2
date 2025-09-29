@@ -300,6 +300,17 @@ The difference mainly comes from the previous algorithm using a sequential membe
 ---
 
 - **2c.**
+
+List Deduplication
+
+- Iterate is useful since it can allow the carrying of an accumulator for the seen state from left to right and decided whether to keep or dro pat each stop. However, since it is inherently sequential just like the algorithm, it does not offer much performance benefits.
+- Map, Tabulate, and Filter are not useful since the decsions are based on the elements before (prefix) and not just the local elements themselves. Reduce would require an associative combine to be present. Other operations like Update, Inject, Subseq etc. don't address the logic of the problem at hand.
+
+ Deduplication in a network
+
+ - Flatten + append to combine all the lists work quite well for the logic of the problem, allowing for parallel subcalls with total work O(N) and  span O(N).
+ - Map or Tabulate combined with Filter are useful as they allow us to drop adjacent duplicate elemnts after sorting has been done with work O(N) and span O(logN).
+
 ---
 
 - **3b.**
