@@ -192,36 +192,38 @@ $S_{\mathcal reduce}(n)=\max{S_{\mathcal balance}(n/3),\,S_{\mathcal balance}(2n
 
 __
 
+
 - **2a.**
 
-dedup input = 
-     let 
-          member(lst, item) = 
-               case lst
-               | Nil
-               | Cons(hd, tl)
+```
+dedup input =
+  let
+    member(lst, item) =
+      case lst
+      | Nil
+      | Cons(hd, tl)
 
-          reverse lst = 
-               let
-                    revLoop (src, acc) = 
-                         case src
-                         | Nil 
-                         | Cons(hd, tl)
-               in
-                    revLoop(lst, Nil)
-               end
+    reverse lst =
+      let
+        revLoop (src, acc) =
+          case src
+          | Nil
+          | Cons(hd, tl)
+      in
+        revLoop(lst, Nil)
+      end
 
-
-          process (seenSoFar, keptRev, remaining) = 
-               case remaining
-               | Nil
-               | Cons(elem, rest)
-                    if member(seenSoFar, elem)
-                    then process(seenSoFar, keptRev, rest)
-                    else process(Cons(elem, seenSoFar), Cons(elem, keptRev), rest)
-               in
-                    process(Nil, Nil, input)
-               end
+    process (seenSoFar, keptRev, remaining) =
+      case remaining
+      | Nil
+      | Cons(elem, rest)
+          if member(seenSoFar, elem)
+          then process(seenSoFar, keptRev, rest)
+          else process(Cons(elem, seenSoFar), Cons(elem, keptRev), rest)
+  in
+    process(Nil, Nil, input)
+  end
+```
 
 
 The total work = Wmember + Wreverse + Wprocess
@@ -259,7 +261,7 @@ Therefore, Stotal(n) = Sproc(n) + Srev(n) = O(n^2) + O(n) = O(n^2).
 ---
 
 - **2b.**
-
+```
 flatten listOfLists = 
      case listOfLists
      | Nil
@@ -288,7 +290,7 @@ multiDedup listOfLists =
      in
           dedupAdjacent sortedItems
      end
-
+```
 
 Work
 
