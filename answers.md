@@ -110,56 +110,66 @@ $$
 
 Eeach equality and each OR-combine is \(O(1)\). These two recursive calls in `reduce` run in **parallel**.
 
-#### Work $(W(n)$)
+#### Work (W(n))
 
-- **Map step (build booleans):** one equality per element  
-  \( W_{\text{map}}(n) = O(n). \)
+- **Map step (build booleans):** one equality per element
+
+$$
+W_{\mathcal map}(n)=O(n)
+$$
+
+
 
 - **Reduce step (balanced tree of ORs):**
-  - **Level \(i\):** subproblem size \(n/2^i\); nodes \(2^i\); **cost per node** \(O(1)\).  
-    **Cost at level \(i\):** \( \Theta(2^i) \).
-  - **Number of levels:** solve \( n/2^L \le 1 \Rightarrow L=\lceil \log_2 n \rceil \).
-  - **Total reduce work (sum of per-level costs):**  
-    \( W_{\text{red}}(n) \le \sum_{i=0}^{L}\Theta(2^i)
-      = \Theta(2^{L+1}-1)
-      = \Theta(2^L)
-      = \Theta(n). \)
+  - **Level \(i\):** subproblem size $n/2^i$; nodes $2^i$; **cost per node** $O(1)$.  
+    **Cost at level \(i\):** $O(2^i)$.
+  - **Number of levels:** solve $n/2^L \le 1 \Rightarrow L=\lceil \log_2 n \rceil$
+  - **Total reduce work (sum of per-level costs):**  $W_{\text{red}}(n) \le \sum_{i=0}^{L}\Theta(2^i)
+= \Theta(2^{L+1}-1)
+= \Theta(2^L)
+= \Theta(n).$
+
+
+
+
+
+
+
 
 - **Total work:**  
-  \( W(n) = W_{\text{map}}(n) + W_{\text{red}}(n) = O(n)+O(n) = \boxed{\Theta(n)}. \)
+  $W_{\mathcal map}(n) + W_{\mathcal reduction}(n)=O(n) + O(n) = O(n)$
 
 
-#### Span \(S(n)\)
+#### Span (S(n))
 
-- **Map step (parallel map in lecture model):** fork–join over \(n\) equalities  
-  \( S_{\text{map}}(n) = O(\log n). \)  
-  *(If the map were sequential, it would be \(O(n)\).)*
+- **Map step (using parallel map):** fork–join over \(n\) equalities  
+
+$$
+S_{\mathcal map}(n)=O(\log_2 n)
+$$
 
 - **Reduce step:** two halves run in parallel, then an \(O(1)\) combine  
-  - **Per-level span cost:** \( \Theta(1) \)  
-  - **Number of levels:** \( L=\lceil \log_2 n \rceil \)  
-  - **Total reduce span:** \( S_{\text{red}}(n) = \sum_{i=0}^{L}\Theta(1) = \Theta(L)=\Theta(\log n). \)
+  - **Per-level span cost:** $O(1)$ 
+  - **Number of levels:** $L=\lceil \log_2 n \rceil$  
+  - **Total reduce span:** $S_{\text{red}}(n) = \sum_{i=0}^{L}\Theta(1) = \Theta(L)=\Theta(\log n).$
 
 - **Total span:**  
-  \( S(n) = \max\{S_{\text{map}}(n),\,S_{\text{red}}(n)\} = \boxed{\Theta(\log n)}. \)
+$S(n)=\max{S_{\mathcal Map}(n),\,S_{\mathcal Red}(n)\} = O(\log_2 n)$
 
-**Conclusion:** \( \boxed{W(n)=\Theta(n)} \) and \( \boxed{S(n)=\Theta(\log n)} \) for `rsearch` with the lecture’s balanced `reduce` (and parallel map).
+**Conclusion:** The work of $O(n)$ and span of $O(\log_2 n)$ for research is consistent with that of the balanced reduce and parallel map that was shown in the lecture.
 
 ---
-
-
-
-
-
 - **1e.**
 
-Work W(n)
+#### Work (W(n))
+
+$W_{\mathcal total}(n) + W_{\mathcal reduction}(n)=O(n) + O(n) = O(n)$
 
 Total work W(n) = Wmap(N) + Wreduce(n).
 
 Mapping:
 
-Wmap(N) = O(N) 
+Wmap(N) = O(N)
 
 Reducing:
 
@@ -169,12 +179,9 @@ Wreduce(n) = Wbalance(n/3) + Wbalance(2n/3) + O(1) = O(n/3) + O(2n/3) + O(1) = O
 
 Therefore, the total work W(n) = Wmap(n) = O(n) + O(n) = O(N)
 
+#### Span (S(n))
 
-Span S(N)
-
-The Map Step: N equalities over which we will do fork-join.
-Smap(n) = O(logN)
-Reduce Step: Both the subreduces will run in parallel with combine being on the critical path.
+The Map Step: N equalities over which we will do fork-join. Smap(n) = O(logN) Reduce Step: Both the subreduces will run in parallel with combine being on the critical path.
 
 Let Sbalance(m) = O(logm) be the span for balanced reduce as was derived for the earlier function.
 
@@ -186,7 +193,80 @@ Result:
 
 Replacing the reduce function by ureduce for the given function does not change the asymptotic bounds for the work and span for research.
 
+
+
 ---
+
+
+
+
+
+- **1e.**
+
+Model (as in lecture): each equality and each OR-combine is \(O(1)\).  
+In `ureduce`, we do **one unbalanced split** into sizes \(\lfloor n/3 \rfloor\) and \(\lceil 2n/3 \rceil\), then call the **balanced** `reduce` on both halves in **parallel**, and finally combine in \(O(1)\).
+
+**Work \(W(n)\)**
+
+- **Map step (build booleans):** one equality per element
+
+  $$
+  W_{\text{map}}(n)=\Theta(n).
+  $$
+
+- **Reduce step (top-level unbalanced → two balanced reduces):**  
+  Let \(W_{\text{bal}}(m)=\Theta(m)\) be the work of the balanced `reduce` on size \(m\).
+
+  $$
+  W_{\text{red}}(n)
+  \;=\;
+  W_{\text{bal}}(\lfloor n/3\rfloor)
+  \;+\;
+  W_{\text{bal}}(\lceil 2n/3\rceil)
+  \;+\; O(1)
+  \;=\; \Theta(n).
+  $$
+
+- **Total work**
+
+  $$
+  W(n)=W_{\text{map}}(n)+W_{\text{red}}(n)=\boxed{\Theta(n)}.
+  $$
+
+
+**Span \(S(n)\)**
+
+- **Map step (parallel map per lecture):**
+
+  $$
+  S_{\text{map}}(n)=\Theta(\log n).
+  $$
+
+- **Reduce step (two parallel balanced reduces, then \(O(1)\) combine):**  
+  Let \(S_{\text{bal}}(m)=\Theta(\log m)\) be the span of the balanced `reduce`.
+
+  $$
+  S_{\text{red}}(n)
+  \;=\;
+  \max\!\big\{
+  S_{\text{bal}}(\lfloor n/3\rfloor),
+  \;S_{\text{bal}}(\lceil 2n/3\rceil)
+  \big\}
+  \;+\; O(1)
+  \;=\; \Theta(\log n).
+  $$
+
+- **Total span**
+
+  $$
+  S(n)=\max\{S_{\text{map}}(n),\,S_{\text{red}}(n)\}
+  =\boxed{\Theta(\log n)}.
+  $$
+
+**Conclusion.** Replacing the balanced `reduce` with `ureduce` (one unbalanced split, then balanced reduces) does **not** change the asymptotic bounds: \(\boxed{W(n)=\Theta(n)}\) and \(\boxed{S(n)=\Theta(\log n)}\).
+
+
+__
 
 - **2a.**
 
