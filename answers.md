@@ -7,7 +7,7 @@
 Place all written answers from `problemset-03.md` here for easier grading.
 
 
-
+---
 
 - **1b.**
 
@@ -125,6 +125,8 @@ Result:
 
 Replacing the reduce function by ureduce for the given function does not change the asymptotic bounds for the work and span for research.
 
+---
+
 - **2a.**
 
 dedup input = 
@@ -189,6 +191,8 @@ Reverse is also sequential, so its span will be the same as the work. Srev(n) = 
 The entire program is sequential and parallelizing is not possible.
 Therefore, Stotal(n) = Sproc(n) + Srev(n) = O(n^2) + O(n) = O(n^2).
 
+---
+
 - **2b.**
 
 flatten listOfLists = 
@@ -220,22 +224,23 @@ multiDedup listOfLists =
           dedupAdjacent sortedItems
      end
 
+---
 
 - **2c.**
-- 
+---
 
 - **3b.**
 
 
-
+---
 
 - **3d.**
 
 
-
+---
 
 
 - **3f.**
 
-
+---
 
