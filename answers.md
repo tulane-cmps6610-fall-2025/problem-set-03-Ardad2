@@ -444,5 +444,44 @@ S(n) = Smap + Sscan + Sred = O(1) + O(logN) + O(logN) = O(logN)
 
 - **3f.**
 
+Every call to the function splits the given list into two halves, making parallel recursive calls to both and then combining the two result in constant O(1) time.
+
+Work
+
+There are two half sized subproblems and constant time O(1) for combining 
+
+W(n) = 2W(n/2) + O(1)
+
+For the base case for a list with just one element W(1) = O(1)
+
+Unrolling
+
+W(n) = 2W(n/2) + c
+     = 2(2W(n/4) + c) + c
+     = 4W(n/4) + 2c + c
+     = 4(2W(n/8) + c) + 2c + c
+     = 8W(n/8) + 4c + 2c + c
+     ....
+
+At each level i, the total cost is (2^i * c). Since each step involves reducing the size by n/2, the recursive chain forms a balanced tree, therefore the height will be log2(n).
+
+The total cost will be summation from i = 0 to log2(n) of (2^i * c) = c * summation from i = to log2(n) of (2^i) = c * ( (2^(log2(n)) * 2)/(2-1)) = c * (2n) = 2cn = O(n)
+
+For the span, the recursive calls can be done in parallel, so we will take the maximum one to get the critical path. The combine will occur in constnat O(1) time.
+
+S(n) = max{(S(n/2), S(n/2)} + O(1) = S(n/2+ O(1)
+
+For the base case for a list with just one element S(1) = O(1)
+
+Unrolling
+S(n) = S(n/2) + c
+      = S(n/4) + c + c
+      = (Sn/8) + c + c + c
+      ......
+
+At each level i, the cost is c. This is a balanced tree. Since each step involves reducing the size by n/2, the recursive chain forms a balancewd tree, therefore the height will be log2(n).
+
+For a balanced tree we can derived the work/span by calculating (Height * Highest cost for any node) = log2n ( c = clog2n = O(logN)
+
 ---
 
