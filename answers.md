@@ -319,76 +319,149 @@ multiDedup listOfLists =
 
 #### Work (W(n))
 
-Flatten
+### Work $W(N)$
 
+**Flatten**
 This function splits the given outer list into halves, with two halves being recursively done parallely, then being joined together with append.
 
-The total for flattening is:
+Per combine, appending two lists of sizes $N_L$ and $N_R$ costs $\Theta(N_L)$ work (copy left spine once).
 
-Wflat(N) = Wflat(Nl) + Wflat(Nr) + Wappend + O(1)
+$$
+W_{\text{flat}}(N)
+\;\le\;
+W_{\text{flat}}(N_L) + W_{\text{flat}}(N_R) + \Theta(N_L),
+\qquad
+N_L + N_R = N.
+$$
 
-Wappend that will combine the two lists cost O(length of left list) since it will require building a a new list copying the left and then adding right to it.
+Across any recursion **level**, the left sizes over all combines sum to $N$, so each level is $\Theta(N)$.
+There are at most $\log K$ levels for $K$ sublists; since $K \le N$, we get
 
-This is a balanced recursion. 
+$$
+W_{\text{flat}}(N) \;=\; \Theta(N\log N).
+$$
 
-At each level: Each internal pays the cost for combinig O(size of the left result). This is then summed and the total left sizes will always be a constant fraction of N, therefore each level O(N) work.
-
-For a balanced recursion, the work = (Total number of levels) * (Maximum work per level)
-
-Since we are havling the number of sublists each time, we will have a balanced tree with a height of logn.
-
-Therefore Work = LogN * N = O(NlogN).
-
-Sorting
+**Sort**
 
 For this we can use a standard parallel sorting algorithm such as mereg sort, therefore W(N) = 2W(N/2) + O(N), where there are two halves and linear worked required for merging them.
 
-Therefore Wsort(N) = O(NLogN)).
 
-dedupAdjacent SortedList
+$$
+W_{\text{sort}}(N)
+\;=\;
+2\,W_{\text{sort}}(N/2) + \Theta(N)
+\;=\;
+\Theta(N\log N).
+$$
 
-For each pass there will be one comparison. Therefore, the recurrencne can be written as W(N) = W(N-1) + O(1) => Wdedup(N) = O(N).
+**Dedup adjacent (single pass)**
 
-The total work for multiDedup
+For each pass there will be one comparison. Therefore, the recurrencne can be written as W(N) = W(N-1) + O(1)
+
+$$
+W_{\text{dedup}}(N)
+\;=\;
+W_{\text{dedup}}(N-1) + \Theta(1)
+\;=\;
+\Theta(N).
+$$
+
+**Total work**
 
 All these phases run sequentially, therefore the work will add up.
 
-W(total) = Wflatten + Wsort + Wdedup = O(NlogN) + O(NLogN) + O(N) = O(NlogN) (Since NLogN dominates asymptotically).
 
+$$
+W(N)
+\;=\;
+W_{\text{flat}}(N) + W_{\text{sort}}(N) + W_{\text{dedup}}(N)
+\;=\;
+\Theta(N\log N) + \Theta(N\log N) + \Theta(N)
+\;=\;
+\boxed{\Theta(N\log N)}.
+$$
 
 
 #### Span (S(n))
 
-Flatten
+### Span $S(N)$
+
+**Flatten**
 
 We know that the two halves are being run in parallel, therefore the span will be the maximum span along with the cost of merging.
 
-Therefore, S(N) = max(S(Nl), S(Nr)) + Sappend = max(S(Nl), S(Nr)) + O(Size of left half)
+$$
+S_{\text{flat}}(N)
+\;=\;
+\max\!\big(S_{\text{flat}}(N_L),\,S_{\text{flat}}(N_R)\big) + \Theta(N_L),
+\qquad N_L+N_R=N.
+$$
 
-Going from the leaves to the root, the append will copy the left sizes N/2, N/4, N/8.. with the sum being less than N. Therefore, 
+Across levels (from leaves to root) the left sizes sum to
+$N/2 + N/4 + N/8 + \cdots = \Theta(N)$, hence
 
-Sflatten = O(N)
+$$
+S_{\text{flat}}(N) \;=\; \Theta(N).
+$$
 
-sort allItems
+
+**Sort**
 
 We can use a parallelized sorting algorithm, preferably merge sort with merge being possible with O(logN) span with forking and being across O(logN) levels.
 
-Therefore, Ssort(N) = O(logN * logN) = O((logN)^2)).
+$$
+S_{\text{sort}}(N)
+\;=\;
+S_{\text{sort}}(N/2) + \Theta(\log N).
+$$
 
-dedupAdjacent SortedList
+Unrolling for $L=\lceil \log_2 N \rceil$ levels,
 
-There is nothing we can parallelize since it is sequential, therefore, it will be the same as the work. Sdedup(N) = O(N).
+$$
+S_{\text{sort}}(N)
+\;\le\;
+\sum_{i=0}^{L} \Theta\!\big(\log (N/2^i)\big)
+\;=\;
+\Theta\!\left(\sum_{i=0}^{L}(\log N - i)\right)
+\;=\;
+\Theta\!\big((\log N)^2\big).
+$$
 
-Therefore, the total span will add up across the sequential phases.
 
-Stotal(N, m) = Sflatten + Ssort + Sdedup = O(N) + O((logN)^2) + O(N) = O(N).
+**Dedup adjacent**
+
+There is nothing we can parallelize since it is sequential, therefore, it will be the same as the work
+
+$$
+S_{\text{dedup}}(N) \;=\; S_{\text{dedup}}(N-1) + \Theta(1) \;=\; \Theta(N).
+$$
 
 
-Compared to the previous algorithm, the work is better at O(NlogN) compared to the quadratic one for O(N^2) for the previous algorithm. The span is also substantially better at O(N) as compared to quadratic one O(N^2) for the previous algorithm.-
+**Total span**
+The total span will add up across the sequential phases
 
-The parallelism for 2a is (W/S) = O(n^2)/O(n^2) = O(1), whereas for the current algorithm it is (W/S) = O(NlogN)/O(N) = O(logN).
+$$
+S(N)
+\;=\;
+S_{\text{flat}}(N) + S_{\text{sort}}(N) + S_{\text{dedup}}(N)
+\;=\;
+\Theta(N) + \Theta\!\big((\log N)^2\big) + \Theta(N)
+\;=\;
+\boxed{\Theta(N)}.
+$$
 
-The difference mainly comes from the previous algorithm using a sequential membership check compared to the current one's divide conquer flattening as well as parallel sorting phases.
+
+
+
+**Comparison to previous algorithm**
+
+- **Work:** current $W(N)=\Theta(N\log N)\) vs. previous \(W_{\text{prev}}(N)=\Theta(N^2)$.
+- **Span:** current $(S(N)=\Theta(N)\) vs. previous \(S_{\text{prev}}(N)=\Theta(N^2)$.
+- **Parallelism:** previous $frac{W}{S}=\Theta\!\left(\frac{N^2}{N^2}\right)=\Theta(1)$ ; current $\frac{W}{S}=\Theta\!\left(\frac{N\log N}{N}\right)=\Theta(\log N)$
+
+**Reason:** the earlier algorithm performed a sequential membership check per element, leading to quadratic work and span.  
+The current approach uses divide-and-conquer flattening plus parallel sorting, cutting the work to $N\log N$ and the span to $N$.
+
 
 
 
@@ -408,6 +481,8 @@ List Deduplication
  - Map or Tabulate combined with Filter are useful as they allow us to drop adjacent duplicate elemnts after sorting has been done with work O(N) and span O(logN).
 
 ---
+
+
 
 - **3b.**
 
