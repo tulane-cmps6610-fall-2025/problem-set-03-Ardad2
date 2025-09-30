@@ -701,46 +701,63 @@ $$
 
 - **3f.**
 
-Every call to the function splits the given list into two halves, making parallel recursive calls to both and then combining the two result in constant O(1) time.
+Every call to the function splits the given list into two halves, makes **parallel** recursive calls to both, and then combines the two results in constant \(O(1)\) time.
 
-Work
+### Work
 
-There are two half sized subproblems and constant time O(1) for combining 
+There are two half-sized subproblems and \(O(1)\) combine:
 
-W(n) = 2W(n/2) + O(1)
+$$
+W(n) \;=\; 2\,W(n/2) + \Theta(1), \qquad W(1)=\Theta(1).
+$$
 
-For the base case for a list with just one element W(1) = O(1)
+Unrolling a few steps:
 
-Unrolling
+$$
+\begin{aligned}
+W(n) &= 2W(n/2) + c \\
+     &= 4W(n/4) + 2c \\
+     &= 8W(n/8) + 4c + 2c \\
+     &\;\;\vdots \\
+     &= 2^{i} W(n/2^{i}) + (2^{i-1}+\cdots+2+1)c .
+\end{aligned}
+$$
 
-W(n) = 2W(n/2) + c
-     = 2(2W(n/4) + c) + c
-     = 4W(n/4) + 2c + c
-     = 4(2W(n/8) + c) + 2c + c
-     = 8W(n/8) + 4c + 2c + c
-     ....
+At each level \(i\), the add-on cost is \(2^{i-1}c\). The number of levels is
+\(L=\lceil \log_2 n \rceil\). Summing the geometric series:
 
-At each level i, the total cost is (2^i * c). Since each step involves reducing the size by n/2, the recursive chain forms a balanced tree, therefore the height will be log2(n).
+$$
+\sum_{i=1}^{L} 2^{i-1}c \;=\; c\,(2^{L}-1) \;=\; \Theta(n).
+$$
 
-The total cost will be summation from i = 0 to log2(n) of (2^i * c) = c * summation from i = to log2(n) of (2^i) = c * ( (2^(log2(n)) * 2)/(2-1)) = c * (2n) = 2cn = O(n)
+Therefore,
 
-For the span, the recursive calls can be done in parallel, so we will take the maximum one to get the critical path. The combine will occur in constnat O(1) time.
+$$
+\boxed{W(n)=\Theta(n)}.
+$$
 
-S(n) = max{(S(n/2), S(n/2)} + O(1) = S(n/2+ O(1)
+### Span
 
-For the base case for a list with just one element S(1) = O(1)
+The two recursive calls run in parallel, so we take the **maximum** branch on the critical path, then add the \(O(1)\) combine:
 
-Unrolling
-S(n) = S(n/2) + c
-      = S(n/4) + c + c
-      = (Sn/8) + c + c + c
-      ......
+$$
+S(n) \;=\; S(n/2) + \Theta(1), \qquad S(1)=\Theta(1).
+$$
 
-At each level i, the cost is c. This is a balanced tree. Since each step involves reducing the size by n/2, the recursive chain forms a balancewd tree, therefore the height will be log2(n).
+Unrolling:
 
-For a balanced tree we can derived the work/span by calculating (Height * Highest cost for any node) = log2n ( c = clog2n = O(logN)
+$$
+S(n) \;=\; S(n/2)+c \;=\; S(n/4)+c+c \;=\; \cdots \;=\; S(1)+c\,\log_2 n
+\;=\; \Theta(\log n).
+$$
 
----
+Equivalently, the recursion forms a balanced tree of height \(\log n\) with \(O(1)\) cost per level.
 
+$$
+\boxed{S(n)=\Theta(\log n)}.
+$$
 
+**Conclusion:** With parallel recursive calls and \(O(1)\) combine, the algorithm has linear work and logarithmic span: \(W(n)=\Theta(n)\), \(S(n)=\Theta(\log n)\).
+
+--
 
