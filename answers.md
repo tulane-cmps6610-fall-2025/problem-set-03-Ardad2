@@ -255,18 +255,32 @@ Putting them altogether, the work is asymptotically dominated by $\Theta(n^2)$.
 
 #### Span (S(n))
 
-Let Smember(m) be the sapn of member. Since member is a linear scan relying on the previous results, Smember(m) = Smember(m-1) + O(1) = O(m).
-
-Let Sproc(n) be the span of the process and n is the length of the input.
-
-For every ith iteration, we know that member will called once per element for the "SeenSoFar" sublist, therefore every ith call the membership check will cost Smember(i) = O(i) span and the other constant overhead will take about O(1). Process is sequential with each call recursing on the rest, this will all add up along the critical path.
-
-Sproc(n) = Summation from i = to n-1(O(1) + Smem(i)) = summation from i = 0 to n-1 of O(1) + Summation from i = 0 to n-1 of O(i) = O(n) + O(n^2) = O(n^2).
-
-Reverse is also sequential, so its span will be the same as the work. Srev(n) = O(n).
 
 The entire program is sequential and parallelizing is not possible.
 Therefore, Stotal(n) = Sproc(n) + Srev(n) = O(n^2) + O(n) = O(n^2).
+
+
+- **Member Span:** $S_{\text{member}}(m) = S_{\text{member}}(m-1) +  \Theta(1) =  \Theta(m)
+
+Let Smember(m) be the sapn of member. Since member is a linear scan relying on the previous results, Smember(m) = Smember(m-1) + O(1) = O(m).
+
+
+- **Process Span:** $S_{\text{proc}}(n) \le \sum_{i=0}^{n-1}(\Theta(1) + S_{\text{member}}(i)) = \sum_{i=0}^{n-1}(\Theta(1) + \Theta(i) 
+= \Theta(n) + \Theta(n^2)
+= \Theta(n^2).$
+
+For every ith iteration, we know that member will called once per element for the "SeenSoFar" sublist, therefore every ith call the membership check will cost Smember(i) = O(i) span and the other constant overhead will take about O(1). Process is sequential with each call recursing on the rest, this will all add up along the critical path.
+
+
+For each step i, the cost would be O(1) for match/branch/cons and O(i) for calling the Member since it will iterate through all the elements in indices i and before to check for membership.
+
+- **Reverse span:** $S_{\text{rev}}(n) = \Theta(n)$
+
+Reverse is also sequential, so its span will be the same as the work.
+
+- **Total span:** $S_{\text{rev}}(n) = S_{\text{member}}(n) + S_{\text{proc}}(n) + S_{\text{rev}}(n)  = \Theta(n^2) + \Theta(n^2) + \Theta(n) $
+
+The entire program is sequential and parallelizing is not possible. Putting them altogether, the span is asymptotically dominated by $\Theta(n^2)$.
 
 
 ---
