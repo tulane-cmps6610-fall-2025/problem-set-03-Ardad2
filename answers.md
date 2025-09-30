@@ -591,89 +591,110 @@ Therefore, the span is O(N).
 
 - **3d.**
 
-The given implementation can be divided into three different sequential phases: the mapping phase where the input characters are mapped with the paranethesis map to values of {1, -1, 0}, the scan (prefix sum via contraction) done over that array, and then the reduce of the prefix array with min, checking that no prefix goes below 0.
+The given implementation can be divided into three different sequential phases: the mapping phase where the input characters are mapped with the parenthesis map to values of \(\{1,-1,0\}\), the scan (prefix sum via contraction) done over that array, and then the reduce of the prefix array with \(\min\), checking that no prefix goes below \(0\).
 
-Phase 1: Map
+### Phase 1: Map
 
-"paren_map" is applied to all the n items. For each element it takes O(1) work. This is parallelizable and can be done separately for each item.
+`paren_map` is applied to all the \(n\) items. For each element it takes \(O(1)\) work. This is parallelizable and can be done separately for each item.
 
-So Wmap(N) = Summation from i = 0 to N of O(1) = O(N + 1) = O(N)
-Smap(N) = maxi O(1) = O(1).
+Work:
 
-Phase 2: Scan
+$$
+W_{\text{map}}(n)=\sum_{i=1}^{n}\Theta(1)=\Theta(n).
+$$
 
-Adjacent items are combined pairwise leading to half size smaller problems that can be solved in parallel. Recursion is done on these sub problem and the results are use to fill up the even and odd positions of the full prefix array.
+Span (parallel map model):
 
-Wscan(N) = Wscan(n/2) + cn
+$$
+S_{\text{map}}(n)=\max_i \Theta(1)=\Theta(1).
+$$
 
-For base case for a single element list, Wscan(1) = O(1)
+
+### Phase 2: Scan
+
+Adjacent items are combined pairwise leading to half-size smaller problems that can be solved in parallel. Recursion is done on these subproblems and the results are used to fill up the even and odd positions of the full prefix array.
+
+Work recurrence:
+
+$$
+W_{\text{scan}}(n)=W_{\text{scan}}(n/2)+c\,n,\qquad W_{\text{scan}}(1)=\Theta(1).
+$$
 
 Unrolling:
 
-W(n) = W(n/2) + cn
-     = W(n/4) + (cn/2) + (cn)
-     = W(n/8) + (cn/4) + (cn/2) + (cn)
-     ...
-     = W(1)  + c (n + n/2 + n/4 + ...) = O(1) + 2cn = O(N)
+$$
+W_{\text{scan}}(n)=W(n/2)+c\,n
+$$
 
-Sscan(n) = Sscan(n/2) + O(1)
+$$
+=\,W(n/4)+\tfrac{c n}{2}+c n
+$$
 
-For base case for a single element list, Sscan = O(1) 
+$$
+=\,W(n/8)+\tfrac{c n}{4}+\tfrac{c n}{2}+c n
+$$
 
-Unrolling
-Sscan(n) = Sscan(n/2) + c
-          = (Sscan(n/4)) + c + c
-          = (Sscan(n/8)) + c + c + c ....
+$$
+=\,W(1)+c\!\left(n+\frac{n}{2}+\frac{n}{4}+\cdots\right)=\Theta(n).
+$$
 
-This is a balanced tree with a constant cost of c per level and since the problem is reducing by half at each step, it will form a balanced binary tree. Therefore, giving a height of log(n).
+Span recurrence:
 
-Therefore span = (Number of levels) * (Highest span) = (logn) * (c) = clogn = O(logN).
+$$
+S_{\text{scan}}(n)=S_{\text{scan}}(n/2)+\Theta(1),\qquad S_{\text{scan}}(1)=\Theta(1).
+$$
 
+Balanced tree with constant cost per level \(\Rightarrow\) height \(\log n\):
 
-Phase 3: reduce
-
-min is computed over all the n prefix values.. A balanced binary tree is formed during reduction.
-
-Wred(n) = 2Wred(n/2) + O(1) 
-
-For base case for a single element list Wred(1) = O(1)
-
-Unrolling
-
-Wred(n) = 2Wred(n/2) + c 
-        = 2(2Wred(n/4) + c) + c = 4Wred(n/4) + 2c + c 
-        = 4(2Wred(n/8) + c) + 2c + c 
-        = 8Wred(n/8) + 4c + 2c + c ....
-
-At each level i, the cost can be given (2^i * c). Since the problem reduces by half at each step, it will form a binary tree, therefore the height will be log(n).
-
-The total cost = Summation from i = 0 to log2(n) of (2^i * c) = c * Summation from i = 0 to log2(n) of (2^i) = c * ( (2^log2n) * 2)/(2-1) = c * (2n) = 2cn = O(n)
-
-Sred(n) = Sred(n/2) + O(1)
-
-Unrolling
-
-Sred(n) = Sred(n/2) + c 
-        = Sred(n/4) + c + c
-        = Sred(n/8) + c + c + c
-        ....
-
-At each level, the cost can given by c and is uniform. Therefore, showing this is a balanced tree. Since the problem reduces by half at each step, it will form a binary tree, therefore the height will be log(n)
-
-For a balanced tree, the total cost = (Number of levels) x (the worst level cost) = logn * c = clogn = O(logN).
+$$
+S_{\text{scan}}(n)=\Theta(\log n).
+$$
 
 
-Putting all of these together
+### Phase 3: Reduce
 
-W(n) = Wmap + Wscan + Wred = O(n) + O(n) + O(n) = O(n)
+\(\min\) is computed over all the \(n\) prefix values. A balanced binary tree is formed during reduction.
 
-map must be finished before scan and scan must finshed before reduced. Therefore, this is a sequential procedure and the spans will be added.
+Work recurrence:
 
-S(n) = Smap + Sscan + Sred = O(1) + O(logN) + O(logN) = O(logN) 
+$$
+W_{\text{red}}(n)=2\,W_{\text{red}}(n/2)+\Theta(1),\qquad W_{\text{red}}(1)=\Theta(1).
+$$
+
+Unrolling (sum of per-level costs over \(\log n\) levels):
+
+$$
+W_{\text{red}}(n)=\sum_{i=0}^{\lceil\log_2 n\rceil} 2^{i}\cdot\Theta(1)=\Theta(n).
+$$
+
+Span recurrence:
+
+$$
+S_{\text{red}}(n)=S_{\text{red}}(n/2)+\Theta(1),\qquad S_{\text{red}}(1)=\Theta(1).
+$$
+
+Balanced tree, height \(\log n\):
+
+$$
+S_{\text{red}}(n)=\Theta(\log n).
+$$
 
 
+### Putting all of these together
 
+Total work:
 
+$$
+W(n)=W_{\text{map}}(n)+W_{\text{scan}}(n)+W_{\text{red}}(n)=\boxed{\Theta(n)}.
+$$
+
+Map must be finished before scan and scan must be finished before reduce. Therefore, this is a sequential procedure across phases and the spans add.
+
+Total span:
+
+$$
+S(n)=S_{\text{map}}(n)+S_{\text{scan}}(n)+S_{\text{red}}(n)=\boxed{\Theta(\log n)}.
+$$
 
 ---
 
@@ -720,4 +741,6 @@ At each level i, the cost is c. This is a balanced tree. Since each step involve
 For a balanced tree we can derived the work/span by calculating (Height * Highest cost for any node) = log2n ( c = clog2n = O(logN)
 
 ---
+
+
 
