@@ -225,25 +225,35 @@ dedup input =
   end
 ```
 
+#### Work (W(n))
 
-The total work = Wmember + Wreverse + Wprocess
+The program has different phases: 
 
-Member is called once per element for the "seenSoFar" sub-list therefore for the i-th call, |SeenSOFar| <= i, leading to a cost of O(i)
+- **Seen so far size bound for every ith index**: $$|seenSoFar| \le i $$
+For every ith iteration, there can be at most i items behind, therefore that is the maximum number of items that could have been seen.
 
-Therefore, Wmember(n) = Summation from i = 0 to n-1 of O(i) = O(n^2).
+- **Member Work:** $W_{\text{member}}(n) \le \sum_{i=0}^{n-1}\Theta(i)
+= \Theta(n^2).$
+
+The memeber function looks back at previous items and the maximum number of items could be around the same at its index.
+
+- **Process work:** $W_{\text{proc}}(n) \le \sum_{i=0}^{n-1}(\Theta(1) + \Theta(i))
+= \Theta(n) + \Theta(n^2)
+= \Theta(n^2).$
+
+For each step i, the cost would be O(1) for match/branch/cons and O(i) for calling the Member since it will iterate through all the elements in indices i and before to check for membership.
+
+- **Reverse work:** $W_{\text{rev}}(n) = \Theta(n)$
+
+Reverse goes through the entire list so would be done in linear time based on the length.
+
+- **Total work:** $W_{\text{rev}}(n) = W_{\text{member}}(n) + W_{\text{proc}}(n) + W_{\text{rev}}(n)  = \Theta(n^2) + \Theta(n^2) + \Theta(n) $
+
+Putting them altogether, the work is asymptotically dominated by $\Theta(n^2)$.
 
 
-Let Wproc(n) be the work done for the process on a list of length n. 
 
-For each step i, the cost would be O(1) for match/branch/cons and O(i) for calling member (as it will iterate through elements in indices i and before to check for membership).
-
-Wproc(n) = summation from i = 0 to n-1 of (O(1) + O(i)) = summation from i = 0 to n-1 of O(1) + summation of i = 0 to n-1 of O(i) = O(n) + summation of i = 0 to n-1 of O(i) = O(n) + O(n^2) (Already calculated for Wmember(n)).
-
-The final reverse, Wreverse(n) would be O(n) going through the entire list.
-
-Therefore, Wtotal = Wmember + Wreverse + Wprocess = O(N^2) + O(N) + O(N) = O(N^2) (Since O(N^2) asymptotically dominates the other two).
-
-Span(N)
+#### Span (S(n))
 
 Let Smember(m) be the sapn of member. Since member is a linear scan relying on the previous results, Smember(m) = Smember(m-1) + O(1) = O(m).
 
@@ -257,6 +267,7 @@ Reverse is also sequential, so its span will be the same as the work. Srev(n) = 
 
 The entire program is sequential and parallelizing is not possible.
 Therefore, Stotal(n) = Sproc(n) + Srev(n) = O(n^2) + O(n) = O(n^2).
+
 
 ---
 
@@ -292,7 +303,7 @@ multiDedup listOfLists =
      end
 ```
 
-Work
+#### Work (W(n))
 
 Flatten
 
@@ -331,7 +342,8 @@ All these phases run sequentially, therefore the work will add up.
 W(total) = Wflatten + Wsort + Wdedup = O(NlogN) + O(NLogN) + O(N) = O(NlogN) (Since NLogN dominates asymptotically).
 
 
-Span
+
+#### Span (S(n))
 
 Flatten
 
@@ -363,6 +375,9 @@ Compared to the previous algorithm, the work is better at O(NlogN) compared to t
 The parallelism for 2a is (W/S) = O(n^2)/O(n^2) = O(1), whereas for the current algorithm it is (W/S) = O(NlogN)/O(N) = O(logN).
 
 The difference mainly comes from the previous algorithm using a sequential membership check compared to the current one's divide conquer flattening as well as parallel sorting phases.
+
+
+
 
 ---
 
