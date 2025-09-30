@@ -496,11 +496,44 @@ W(n) = W(n - 1) + c
 
 For base case W(0) = O(1)
 
-Unrolling W(n) = W(n - 1) + c
-               = W(n - 2) + c + c 
-               = W(n - 3) + c + c + c
-               = W(0) + nc
-               = O(1) + O(N)
+### Deriving an asymptotic upper bound for $W(n)=W(n-1)+c$
+
+- **Unroll $k$ steps:**
+
+$$
+W(n) = W(n-1) + c
+$$
+
+$$
+W(n) = W(n-2) + 2c
+$$
+
+$$
+...
+$$
+
+$$
+W(n) = T(n-k) + kc.
+$$
+
+- **Base case:**
+When the array is of length 0, i.e. empty.
+$$ W(0) = O(1) $$
+
+
+- **Stop the iteration when $n-k=0$**
+
+$$
+W(n) = W(0) + cn = O(1) + cn.
+$$
+
+
+Therefore, the upper bound for the work will be:
+
+$$
+\boxed{W(n)\in O(n)}
+$$
+
 
 Therefore, the work would be O(N)
 
@@ -509,13 +542,45 @@ Span
 The given algorithm can not be parallized, therefore the critical path would include all the steps:
 
 S(n) = S(n - 1) + c
-For base case S(0) = O(1)
 
-Unrolling S(n) = S(n - 1) + c
-               = S(n - 2) + c + c
-               = S(n - 3) + c + c + c
-               = S(0) + nc
-               = O(1) + O(N)
+### Deriving an asymptotic upper bound for $S(n)=S(n-1)+c$
+
+- **Unroll $k$ steps:**
+
+$$
+S(n) = S(n-1) + c
+$$
+
+$$
+S(n) = S(n-2) + 2c
+$$
+
+$$
+...
+$$
+
+$$
+WS(n) = T(n-k) + kc.
+$$
+
+- **Base case:**
+When the array is of length 0, i.e. empty.
+$$ S(0) = O(1) $$
+
+
+- **Stop the iteration when $n-k=0$**
+
+$$
+S(n) = S(0) + cn = O(1) + cn.
+$$
+
+
+Therefore, the upper bound for the span will be:
+
+$$
+\boxed{S(n)\in O(n)}
+$$
+
 
 Therefore, the span is O(N).
 
