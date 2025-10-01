@@ -156,7 +156,7 @@ $$
 - **Total span:**  
 $S(n)=\max{S_{\mathcal Map}(n),\,S_{\mathcal Red}(n)\} = O(\log_2 n)$
 
-**Conclusion:** The work of $O(n)$ and span of $O(\log_2 n)$ for research is consistent with that of the balanced reduce and parallel map that was shown in the lecture.
+**Conclusion:** The work of $O(n)$ and span of $O(\log_2 n)$ for "rsearch" is consistent with that of the balanced reduce and parallel map that was shown in the lecture.
 
 ---
 - **1e.**
@@ -187,7 +187,7 @@ $S_{\mathcal reduce}(n)=\max{S_{\mathcal balance}(n/3),\,S_{\mathcal balance}(2n
 
 - **Total span** Therefore, from the two phases, the total span would be $S_{\mathcal total}(n)=\max{S_{\mathcal map}(n),\,S_{\mathcal reduce}(2n/3)\} = O(\log_2 n)$
 
-- **Conclusion** Replacing the reduce function by "unreduce" for the given function does not change the asymptotic bounds for the work and span as compared to research.
+- **Conclusion** Replacing the reduce function by "unreduce" for the given function does not change the asymptotic bounds for the work and span as compared to "rsearch".
 
 
 __
@@ -457,7 +457,7 @@ $$
 
 - **Work:** current $W(N)=\Theta(N\log N)\) vs. previous \(W_{\text{prev}}(N)=\Theta(N^2)$.
 - **Span:** current $(S(N)=\Theta(N)\) vs. previous \(S_{\text{prev}}(N)=\Theta(N^2)$.
-- **Parallelism:** previous $frac{W}{S}=\Theta\!\left(\frac{N^2}{N^2}\right)=\Theta(1)$ ; current $\frac{W}{S}=\Theta\!\left(\frac{N\log N}{N}\right)=\Theta(\log N)$
+- **Parallelism:** previous $(W/S)=\Theta\!\left(\frac{N^2}{N^2}\right)=\Theta(1)$ ; current $\frac{W}{S}=\Theta\!\left(\frac{N\log N}{N}\right)=\Theta(\log N)$
 
 **Reason:** the earlier algorithm performed a sequential membership check per element, leading to quadratic work and span.  
 The current approach uses divide-and-conquer flattening plus parallel sorting, cutting the work to $N\log N$ and the span to $N$.
@@ -640,7 +640,7 @@ $$
 S_{\text{scan}}(n)=S_{\text{scan}}(n/2)+\Theta(1),\qquad S_{\text{scan}}(1)=\Theta(1).
 $$
 
-Balanced tree with constant cost per level \(\Rightarrow\) height \(\log n\):
+Balanced tree with constant cost per level and height logn.
 
 $$
 S_{\text{scan}}(n)=\Theta(\log n).
@@ -669,7 +669,7 @@ $$
 S_{\text{red}}(n)=S_{\text{red}}(n/2)+\Theta(1),\qquad S_{\text{red}}(1)=\Theta(1).
 $$
 
-Balanced tree, height \(\log n\):
+Balanced tree with height logn: 
 
 $$
 S_{\text{red}}(n)=\Theta(\log n).
@@ -720,7 +720,7 @@ W(n) &= 2W(n/2) + c \\
 $$
 
 At each level i, the add-on cost is $2^{i-1}c$. The number of levels is
-\lceil \log_2 n \rceil. Summing the geometric series:
+logn . Summing the geometric series:
 
 $$
 \sum_{i=1}^{\lceil \log_2 n \rceil} 2^{i-1}c \;=\; c\,(2^{\lceil \log_2 n \rceil}-1) \;=\; \Theta(n).
@@ -734,7 +734,7 @@ $$
 
 ### Span
 
-The two recursive calls run in parallel, so we take the **maximum** branch on the critical path, then add the O(1) combine:
+The two recursive calls run in parallel, so we take the maximum branch on the critical path, then add the O(1) combine:
 
 $$
 S(n) \;=\; S(n/2) + \Theta(1), \qquad S(1)=\Theta(1).
@@ -753,7 +753,7 @@ $$
 \boxed{S(n)=\Theta(\log n)}.
 $$
 
-**Conclusion:** With parallel recursive calls and \(O(1)\) combine, the algorithm has linear work and logarithmic span: \(W(n)=\Theta(n)\), \(S(n)=\Theta(\log n)\).
+**Conclusion:** With parallel recursive calls and O(1) combine, the algorithm has linear work and logarithmic span: W(n) = O(n) and S(n) = O(logN).
 
 --
 
