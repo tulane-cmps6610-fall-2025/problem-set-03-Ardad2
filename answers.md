@@ -11,7 +11,7 @@ Place all written answers from `problemset-03.md` here for easier grading.
 
 - **1b.**
 
-For the algorithm, each application of the update function and advance made to the next element costs constant time O(1). The given iterate function goes through the entire lost and stops only when the list is empty.
+For the algorithm, each application of the update function and advance made to the next element costs constant time O(1). The given iterate function goes through the entire list and stops only when the list is empty.
 
 **Work W(n)**
 For non empty array a, a constant-time update O(1) is done and then recursion is done on a list of length n - 1. This would give the following work: 
@@ -42,7 +42,7 @@ $$
 
 - **Base case:**
 When the array is of length 0, i.e. empty.
-$$ W(0) = O(1) $$
+$W(0) = O(1)$
 
 
 - **Stop the iteration when $n-k=0$**
@@ -62,7 +62,7 @@ $$
 
 **Span S(n)**
 
-Each call made by isearch to iterate, would compute f(x, a[0]) and would then make a recursive call to a[1:]. Therefore, since each recursive call is dependent on the previous recursive calls, this would require a sequential chain.
+Each call made by "isearch" to iterate, would compute f(x, a[0]) and would then make a recursive call to a[1:]. Therefore, since each recursive call is dependent on the previous recursive calls, this would require a sequential chain.
 
 
 ### Deriving an asymptotic upper bound for $S(n)=S(n-1)+c$
@@ -87,7 +87,7 @@ $$
 
 - **Base case:**
 When the array is of length 0, i.e. empty.
-$$ S(0) = O(1) $$
+$S(0) = O(1)$
 
 
 - **The iteration is completete when $n-k=0$**
@@ -123,10 +123,10 @@ $$
 - **Reduce step (balanced tree of ORs):**
   - **Level \(i\):** subproblem size $n/2^i$; nodes $2^i$; **cost per node** $O(1)$.  
     **Cost at level \(i\):** $O(2^i)$.
-  - **Number of levels:** solve $n/2^L \le 1 \Rightarrow L=\lceil \log_2 n \rceil$
-  - **Total reduce work (sum of per-level costs):**  $W_{\text{red}}(n) \le \sum_{i=0}^{L}\Theta(2^i)
-= \Theta(2^{L+1}-1)
-= \Theta(2^L)
+  - **Number of levels:** solve $n/2^(\lceil \log_2 n \rceil) \le 1$
+  - **Total reduce work (sum of per-level costs):**  $W_{\text{red}}(n) \le \sum_{i=0}^{\lceil \log_2 n \rceil}\Theta(2^i)
+= \Theta(2^{\lceil \log_2 n \rceil+1}-1)
+= \Theta(2^\lceil \log_2 n \rceil)
 = \Theta(n).$
 
 
@@ -150,8 +150,8 @@ $$
 
 - **Reduce step:** two halves run in parallel, then an \(O(1)\) combine  
   - **Per-level span cost:** $O(1)$ 
-  - **Number of levels:** $L=\lceil \log_2 n \rceil$  
-  - **Total reduce span:** $S_{\text{red}}(n) = \sum_{i=0}^{L}\Theta(1) = \Theta(L)=\Theta(\log n).$
+  - **Number of levels:** $\lceil \log_2 n \rceil$  
+  - **Total reduce span:** $S_{\text{red}}(n) = \sum_{i=0}^{\lceil \log_2 n \rceil}\Theta(1) = \Theta(L)=\Theta(\log n).$
 
 - **Total span:**  
 $S(n)=\max{S_{\mathcal Map}(n),\,S_{\mathcal Red}(n)\} = O(\log_2 n)$
@@ -260,7 +260,7 @@ The entire program is sequential and parallelizing is not possible.
 Therefore, Stotal(n) = Sproc(n) + Srev(n) = O(n^2) + O(n) = O(n^2).
 
 
-- **Member Span:** $S_{\text{member}}(m) = S_{\text{member}}(m-1) +  \Theta(1) =  \Theta(m)
+- **Member Span:** $S_{\text{member}}(m) = S_{\text{member}}(m-1) +  \Theta(1) =  \Theta(m)$
 
 Let Smember(m) be the sapn of member. Since member is a linear scan relying on the previous results, Smember(m) = Smember(m-1) + O(1) = O(m).
 
@@ -415,14 +415,14 @@ S_{\text{sort}}(N)
 S_{\text{sort}}(N/2) + \Theta(\log N).
 $$
 
-Unrolling for $L=\lceil \log_2 N \rceil$ levels,
+Unrolling for $\lceil \log_2 N \rceil$ levels,
 
 $$
 S_{\text{sort}}(N)
 \;\le\;
-\sum_{i=0}^{L} \Theta\!\big(\log (N/2^i)\big)
+\sum_{i=0}^{\lceil \log_2 n \rceil} \Theta\!\big(\log (N/2^i)\big)
 \;=\;
-\Theta\!\left(\sum_{i=0}^{L}(\log N - i)\right)
+\Theta\!\left(\sum_{i=0}^{\lceil \log_2 n \rceil}(\log N - i)\right)
 \;=\;
 \Theta\!\big((\log N)^2\big).
 $$
@@ -488,8 +488,6 @@ List Deduplication
 
 The algorithms makes use of iterate which processes the list sequentially, since each item relies on the previous and about O(1) constant work is done by parens_update function. Iterate also keeps going until it has visited all the items.
 
-Work
-
 We get the following recurrence
 
 W(n) = W(n - 1) + c
@@ -518,7 +516,7 @@ $$
 
 - **Base case:**
 When the array is of length 0, i.e. empty.
-$$ W(0) = O(1) $$
+$W(0) = O(1)$
 
 
 - **Stop the iteration when $n-k=0$**
@@ -534,10 +532,8 @@ $$
 \boxed{W(n)\in O(n)}
 $$
 
-
 Therefore, the work would be O(N)
 
-Span
 
 The given algorithm can not be parallized, therefore the critical path would include all the steps:
 
@@ -565,7 +561,7 @@ $$
 
 - **Base case:**
 When the array is of length 0, i.e. empty.
-$$ S(0) = O(1) $$
+$S(0) = O(1)$
 
 
 - **Stop the iteration when $n-k=0$**
@@ -591,11 +587,11 @@ Therefore, the span is O(N).
 
 - **3d.**
 
-The given implementation can be divided into three different sequential phases: the mapping phase where the input characters are mapped with the parenthesis map to values of \(\{1,-1,0\}\), the scan (prefix sum via contraction) done over that array, and then the reduce of the prefix array with \(\min\), checking that no prefix goes below \(0\).
+The given implementation can be divided into three different sequential phases: the mapping phase where the input characters are mapped with the parenthesis map to values of (1, -1, 0), the scan (prefix sum via contraction) done over that array, and then the reduce of the prefix array with min, checking that no prefix goes below 0.
 
 ### Phase 1: Map
 
-`paren_map` is applied to all the \(n\) items. For each element it takes \(O(1)\) work. This is parallelizable and can be done separately for each item.
+`paren_map` is applied to all the n items. For each element it takes O(1) work. This is parallelizable and can be done separately for each item.
 
 Work:
 
@@ -653,7 +649,7 @@ $$
 
 ### Phase 3: Reduce
 
-\(\min\) is computed over all the \(n\) prefix values. A balanced binary tree is formed during reduction.
+min is computed over all the n prefix values. A balanced binary tree is formed during reduction.
 
 Work recurrence:
 
@@ -661,7 +657,7 @@ $$
 W_{\text{red}}(n)=2\,W_{\text{red}}(n/2)+\Theta(1),\qquad W_{\text{red}}(1)=\Theta(1).
 $$
 
-Unrolling (sum of per-level costs over \(\log n\) levels):
+Unrolling (sum of per-level costs over log n levels):
 
 $$
 W_{\text{red}}(n)=\sum_{i=0}^{\lceil\log_2 n\rceil} 2^{i}\cdot\Theta(1)=\Theta(n).
@@ -701,11 +697,11 @@ $$
 
 - **3f.**
 
-Every call to the function splits the given list into two halves, makes **parallel** recursive calls to both, and then combines the two results in constant \(O(1)\) time.
+Every call to the function splits the given list into two halves, makes parallel recursive calls to both, and then combines the two results in constant O(1) time.
 
 ### Work
 
-There are two half-sized subproblems and \(O(1)\) combine:
+There are two half-sized subproblems and O(1) combine:
 
 $$
 W(n) \;=\; 2\,W(n/2) + \Theta(1), \qquad W(1)=\Theta(1).
@@ -723,11 +719,11 @@ W(n) &= 2W(n/2) + c \\
 \end{aligned}
 $$
 
-At each level \(i\), the add-on cost is \(2^{i-1}c\). The number of levels is
-\(L=\lceil \log_2 n \rceil\). Summing the geometric series:
+At each level i, the add-on cost is $2^{i-1}c$. The number of levels is
+\lceil \log_2 n \rceil. Summing the geometric series:
 
 $$
-\sum_{i=1}^{L} 2^{i-1}c \;=\; c\,(2^{L}-1) \;=\; \Theta(n).
+\sum_{i=1}^{\lceil \log_2 n \rceil} 2^{i-1}c \;=\; c\,(2^{\lceil \log_2 n \rceil}-1) \;=\; \Theta(n).
 $$
 
 Therefore,
@@ -738,7 +734,7 @@ $$
 
 ### Span
 
-The two recursive calls run in parallel, so we take the **maximum** branch on the critical path, then add the \(O(1)\) combine:
+The two recursive calls run in parallel, so we take the **maximum** branch on the critical path, then add the O(1) combine:
 
 $$
 S(n) \;=\; S(n/2) + \Theta(1), \qquad S(1)=\Theta(1).
@@ -751,7 +747,7 @@ S(n) \;=\; S(n/2)+c \;=\; S(n/4)+c+c \;=\; \cdots \;=\; S(1)+c\,\log_2 n
 \;=\; \Theta(\log n).
 $$
 
-Equivalently, the recursion forms a balanced tree of height \(\log n\) with \(O(1)\) cost per level.
+Equivalently, the recursion forms a balanced tree of height log n with O(1) cost per level.
 
 $$
 \boxed{S(n)=\Theta(\log n)}.
